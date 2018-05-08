@@ -1,0 +1,128 @@
+import React, { Component } from 'react';
+import logo from './logo.svg';
+import './App.css';
+import ReactFileReader from 'react-file-reader';
+
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {value: ''};
+  }
+
+  handleChange(event) {
+    this.setState({value: event.target.value});
+  }
+
+  handleSubmit(event) {
+    alert('A name was submitted: ' + this.state.value);
+    event.preventDefault();
+  }
+
+  handleFiles = files => {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+    // Use reader.result
+    alert(reader.result)
+    console.log("cfv" + reader.readAsText(files)); 
+    }
+    console.log("cfv" + reader.readAsText(files[0]));
+}
+
+  render() {
+
+    return (
+      // returns only one div (can be nested though)!
+      <div>
+        <ReactFileReader handleFiles={this.handleFiles} fileTypes={'.txt'}>
+          <button className='btn'>Upload</button>
+        </ReactFileReader>
+        <form onSubmit={this.handleSubmit.bind(this)}>
+          <div class="form-group">
+            <label for="exampleFormControlFile1">Example file input</label>
+            <input type="file" class="form-control-file" id="exampleFormControlFile1" />
+            <input type="submit" value="Submit" />
+          </div>
+        </form>
+      </div>
+    );
+  }
+}
+
+export default App;
+
+
+////////
+
+
+import React, { Component } from 'react';
+import logo from './logo.svg';
+import './App.css';
+import ReactFileReader from 'react-file-reader';
+import {SERVERS} from './data/servers'
+// const SERVERS = require('./data/servers');
+
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: '',
+      servers: SERVERS
+    };
+  }
+
+  handleChange(event) {
+    this.setState({value: event.target.value});
+  }
+
+  handleSubmit(event) {
+    
+    const numbers = [1, 2, 3, 4, 5];
+    // const doubled = numbers.map((number) => number * 2);
+    // console.log(doubled);
+    const listItems = numbers.map((number) =>
+      <li>{number}</li>
+    );
+    this.setState({servers: listItems})
+    event.preventDefault();
+  }
+
+  handleFiles = files => {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+    // Use reader.result
+    alert(reader.result)
+    console.log("cfv" + reader.readAsText(files)); 
+    }
+    console.log("cfv" + reader.readAsText(files[0]));
+}
+
+  render() {
+  //   let SERVERS2 = [
+  //     'serverA',
+  //     'serverB',
+  //     'serverC',
+  //     'serverD',
+  //     'serverE'
+  // ]
+    let serverList = this.state.servers.map(server => <li>{server}</li>)
+    let serverList = SERVERS.map(server => <li>{server}</li>)
+    return (
+      // returns only one div (can be nested though)!
+      <div>
+        <ul>
+          {serverList}
+        </ul>
+        <form onSubmit={this.handleSubmit.bind(this)}>
+          <div class="form-group">
+            <label for="exampleFormControlFile1">Choose your certificate</label>
+            <input type="file" class="form-control-file" id="exampleFormControlFile1" />
+            <input type="submit" value="Submit" />
+          </div>
+        </form>
+        {/* <ul>{servers}</ul> */}
+      </div>
+    );
+  }
+}
+
+export default App;
