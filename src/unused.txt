@@ -19,12 +19,12 @@ class App extends Component {
   }
 
   handleFiles = files => {
-    var reader = new FileReader();
+    
     reader.onload = function(e) {
     // Use reader.result
     alert(reader.result)
     console.log("cfv" + reader.readAsText(files)); 
-    }
+    }var reader = new FileReader();
     console.log("cfv" + reader.readAsText(files[0]));
 }
 
@@ -120,6 +120,276 @@ class App extends Component {
           </div>
         </form>
         {/* <ul>{servers}</ul> */}
+      </div>
+    );
+  }
+}
+
+export default App;
+
+////
+
+import React,  { Component , RestServices } from 'react';
+import logo from './logo.svg';
+import './App.css';
+import ReactFileReader from 'react-file-reader';
+import {SERVERS} from './data/servers'
+import axios from 'axios'
+// const SERVERS = require('./data/servers');
+
+class App extends Component {
+  
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: 'serverA',
+      selectedFiles: null
+    // servers: SERVERS
+    };
+  }
+
+  handleChange(event) {
+    console.log("event " + event)
+    this.setState({value: event.target.value});
+  }
+
+  // handleSubmit(event) {
+  //   event.preventDefault();
+  // }
+
+  // or if not wanna use handleSubmit.bind(this)
+  // handleSubmit = () => {
+  handleSubmit(){
+
+    let url = 'http://localhost:8080/url/'
+
+    console.log("ketan "+ this.state.selectedFiles);
+    const fd = new FormData();
+    fd.append("myFile",this.state.selectedFiles);
+    axios.post('http://localhost:8080/url/upload',fd)
+    .then(res => {
+      console.log(res)
+    });
+
+  }
+
+  fileSelectHandler(event) {
+    console.log("ktn "+event);
+    let file_ = event.target.files[0]
+    this.setState({
+      selectedFiles: event.target.files[0]
+    });
+    console.log("rajas" + this.state.selectedFiles)
+  }
+
+  handleFiles = files => {
+    const data = new FormData()
+    Object.keys(files).forEach(key => {
+      data.append("files", new Blob([files[key]], { type: 'image/jpeg' }));
+  });
+
+  const url = "http://localhost:8080/url/uploadFiles";
+  let u = axios.post(url, data);
+  return axios.post(url, data);
+  }
+
+  render() {
+    // let serverList = this.state.servers.map(server => <li>{server}</li>)
+    // let serverList = SERVERS.map(server => <li>{server}</li>)
+    return (
+      // returns only one div (can be nested though)!
+      <div>
+       <form onSubmit={this.handleSubmit.bind(this)}>
+          <div className="form-group">
+            <label>Choose your certificate</label>
+            {/* <input type="file" className="form-control-file" id="exampleFormControlFile1" onChange={this.fileSelectHandler.bind(this)} /> */}
+            <ReactFileReader handleFiles={this.handleFiles} fileTypes={'.jpeg'}>
+          <button className='btn'>Upload</button>
+        </ReactFileReader>
+            <br/>
+            <hr/>
+            <div className="form-group">
+              <label>Select server to be deployed</label>
+              <select className="form-control" id="exampleFormControlSelect1" value={this.state.value} 
+                onChange={this.handleChange.bind(this)}>
+                  <option value="serverA">serverA</option>
+                  <option value="serverB">serverB</option>
+                  <option value="serverC">serverC</option>
+                  <option value="serverD">serverD</option>
+                  <option value="serverE">serverE</option>
+              </select>
+            </div>
+            
+            <input type="submit" value="Submit" />
+          </div>
+        </form>
+      </div>
+    );
+  }
+}
+
+export default App;
+
+
+//////////////////////////////////////////////////////
+
+import React,  { Component , RestServices } from 'react';
+import logo from './logo.svg';
+import './App.css';
+import ReactFileReader from 'react-file-reader';
+import {SERVERS} from './data/servers'
+import axios from 'axios'
+// const SERVERS = require('./data/servers');
+
+class App extends Component {
+  
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: 'serverA',
+      selectedFiles: null,
+      myStr: ''
+    // servers: SERVERS
+    };
+  }
+
+  componentDidMount(){
+    fetch('http://localhost:8080/tags/uploadFiles')
+    .then(res => res.json())
+      .then(res => this.setState({
+        myStr: res.myStr
+      }))
+
+    
+  }
+
+  handleChange(event) {
+    console.log("event " + event + "str  "+this.state.myStr)
+    this.setState({value: event.target.value});
+  }
+
+  // handleSubmit(event) {
+  //   event.preventDefault();
+  // }
+
+  // or if not wanna use handleSubmit.bind(this)
+  // handleSubmit = () => {
+  handleSubmit(){
+
+    // const formData = new FormData();
+    // alert(this.state.selectedFiles)
+    // formData.append("file",this.state.selectedFiles)
+    // fetch('http://localhost:8080/tags/upload', {
+    //   mode: 'no-cors',
+    //   method:'POST',
+    //    body: formData
+    // })
+    // .then(res => {
+    //   console.log("filkeName " + res)
+    // });
+
+    // let url = 'http://localhost:8080/url/'
+
+    // console.log("ketan "+ this.state.selectedFiles);
+    // const fd = new FormData();
+    // fd.append("myFile",this.state.selectedFiles);
+    // axios.post('http://localhost:8080/upload',fd)
+    // .then(res => {
+    //   console.log(res)
+    // });
+
+  }
+
+  fileSelectHandler(event) {
+    console.log("ktn "+event);
+    let file_ = event.target.files[0]
+    // let file_ = document.getElementById("exampleFormControlFile1")
+    // this.setState({
+    //   // selectedFiles: event.target.files[0]
+    //   selectedFiles: file_
+    // });
+    // const formData = new FormData();
+    // alert(file_)
+    // formData.append('file',file_)
+    // fetch('http://localhost:8080/tags/upload', {
+    //   mode: 'no-cors',
+    //   method:'POST',
+    //    body: formData
+    // })
+    // .then(res => {
+    //   console.log("filkeName " + res.myStr)
+    // });
+    console.log("rajas" + this.state.selectedFiles)
+  }
+
+  handleFiles = files => {
+    alert("file0 "+ files[0])
+    const formData = new FormData();
+    // alert(file_)
+    formData.append('file',files[0])
+    fetch('http://localhost:8080/tags/upload', {
+      // mode: 'no-cors',
+      method:'POST',
+       body: formData
+    })
+    .then(res => res.json())
+    .then(res => {
+      this.setState({
+        myStr: res.myStr
+      })
+      console.log("inminicfne "+ this.state.myStr)
+    })
+    //   .then(res => this.setState({
+    //     myStr: res.myStr
+    //   }))
+    // alert("response " + this.state.myStr)
+
+    var reader = new FileReader();
+    let fileContent = ''
+    reader.onload = function(e) {
+      // Use reader.result
+      // alert(reader.result)
+      // fileContent = reader.result
+      // fetch(`http://localhost:8080/url/uploadFiles`,"GET")
+      //   .then(results => {
+      //       console.log("reshujvds"+results)
+      //   });
+      console.log("cdfc" + reader.result)
+      // console.log("cfv" + reader.readAsText(files)); 
+      }
+      console.log("cfv" + reader.readAsText(files[0]));
+  }
+
+  render() {
+    // let serverList = this.state.servers.map(server => <li>{server}</li>)
+    // let serverList = SERVERS.map(server => <li>{server}</li>)
+    return (
+      // returns only one div (can be nested though)!
+      <div>
+       <form onSubmit={this.handleSubmit.bind(this)}>
+          <div className="form-group">
+            <label>Choose your certificate</label>
+                       {/* <input type="file" className="form-control-file" id="exampleFormControlFile1" onChange={this.fileSelectHandler.bind(this)} /> */}
+                        <ReactFileReader handleFiles={this.handleFiles} fileTypes={'.txt'}>
+                          <button className='btn'>Upload</button>
+                        </ReactFileReader>
+            <br/> 
+            <hr/>
+            <div className="form-group">
+              <label>Select server to be deployed</label>
+              <select className="form-control" id="exampleFormControlSelect1" value={this.state.value} 
+                onChange={this.handleChange.bind(this)}>
+                  <option value="serverA">serverA</option>
+                  <option value="serverB">serverB</option>
+                  <option value="serverC">serverC</option>
+                  <option value="serverD">serverD</option>
+                  <option value="serverE">serverE</option>
+              </select>
+            </div>
+            
+            <input type="submit" value="Submit" />
+          </div>
+        </form>
       </div>
     );
   }

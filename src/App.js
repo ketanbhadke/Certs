@@ -1,52 +1,73 @@
-import React, { Component } from 'react';
+import React,  { Component , RestServices } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import ReactFileReader from 'react-file-reader';
 import {SERVERS} from './data/servers'
-// const SERVERS = require('./data/servers');
 
 class App extends Component {
+  
   constructor(props) {
     super(props);
     this.state = {
-      value: '',
-      // servers: SERVERS
+      serverName: 'serverA',
+      selectedFile: null,
+      myStr: ''
     };
   }
 
-  handleChange(event) {
-    this.setState({value: event.target.value});
+  componentDidMount(){
+    //for testing connection between Reactjs and SpringBoot
+    // fetch('http://localhost:8080/tags/uploadFiles')
+    // .then(res => res.json())
+    //   .then(res => this.setState({
+    //     myStr: res.myStr
+    //   }))
   }
 
-  handleSubmit(event) {
-    event.preventDefault();
+  handleChange(event) {
+    this.setState({serverName: event.target.value});
+  }
+
+  handleSubmit(){
+    const formData = new FormData();
+    formData.append('file',this.state.selectedFile)
+    var url = `http://localhost:8080/tags/upload/${this.state.serverName}`
+
+    fetch(url,{
+      // mode: 'no-cors', // very Important ... used to give error for res=>res.json()
+      method:'POST',
+       body: formData
+    })
+    .then(res => res.json())
+    .then(res => {
+      this.setState({
+        myStr: res.myStr
+      })
+    })
   }
 
   handleFiles = files => {
-    var reader = new FileReader();
-    reader.onload = function(e) {
-    // Use reader.result
-    alert(reader.result)
-    console.log("cfv" + reader.readAsText(files)); 
-    }
-    console.log("cfv" + reader.readAsText(files[0]));
-}
+    this.setState({
+      selectedFile: files[0]
+    })
+  }
 
   render() {
-    // let serverList = this.state.servers.map(server => <li>{server}</li>)
-    // let serverList = SERVERS.map(server => <li>{server}</li>)
     return (
       // returns only one div (can be nested though)!
       <div>
        <form onSubmit={this.handleSubmit.bind(this)}>
-          <div class="form-group">
-            <label for="exampleFormControlFile1">Choose your certificate</label>
-            <input type="file" class="form-control-file" id="exampleFormControlFile1" />
-            <br/>
+          <div className="form-group">
+            <label>Choose your certificate</label>
+                       {/* <input type="file" className="form-control-file" id="exampleFormControlFile1" onChange={this.fileSelectHandler.bind(this)} /> */}
+                        <ReactFileReader handleFiles={this.handleFiles} fileTypes={'.txt'}>
+                          <button className='btn'>Upload</button>
+                        </ReactFileReader>
+            <br/> 
             <hr/>
-            <div class="form-group">
-              <label for="exampleFormControlSelect1">Select server to be deployed</label>
-              <select class="form-control" id="exampleFormControlSelect1" value={this.state.value} 
+            <div className="form-group">
+              <label>Select server to be deployed</label>
+              <select className="form-control" id="exampleFormControlSelect1" value={this.state.value} 
                 onChange={this.handleChange.bind(this)}>
                   <option value="serverA">serverA</option>
                   <option value="serverB">serverB</option>
