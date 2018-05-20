@@ -1,8 +1,12 @@
 import React,  { Component , RestServices } from 'react';
 import logo from './logo.svg';
-import './App.css';
+import './components/css/app.css';
 import ReactFileReader from 'react-file-reader';
 import {SERVERS} from './data/servers'
+import {DeploymentInfo} from './components/deploymentInfo'
+import {DeploymentHistory} from './components/deploymentHistory'
+import { Header } from './components/header'
+import { CertificateUpload } from './components/certs-upload'
 
 class App extends Component {
   
@@ -56,30 +60,23 @@ class App extends Component {
     return (
       // returns only one div (can be nested though)!
       <div>
-       <form onSubmit={this.handleSubmit.bind(this)}>
-          <div className="form-group">
-            <label>Choose your certificate</label>
-                       {/* <input type="file" className="form-control-file" id="exampleFormControlFile1" onChange={this.fileSelectHandler.bind(this)} /> */}
-                        <ReactFileReader handleFiles={this.handleFiles} fileTypes={'.txt'}>
-                          <button className='btn'>Upload</button>
-                        </ReactFileReader>
-            <br/> 
-            <hr/>
-            <div className="form-group">
-              <label>Select server to be deployed</label>
-              <select className="form-control" id="exampleFormControlSelect1" value={this.state.value} 
-                onChange={this.handleChange.bind(this)}>
-                  <option value="serverA">serverA</option>
-                  <option value="serverB">serverB</option>
-                  <option value="serverC">serverC</option>
-                  <option value="serverD">serverD</option>
-                  <option value="serverE">serverE</option>
-              </select>
+        <Header />
+          <div class="row">
+            <div class="container">
+              <div class="card-group">
+                  <div class="col-lg-6">
+                        <div class="card-group-vertical">
+                            <DeploymentInfo />
+                            <DeploymentHistory />
+                        </div>
+                  </div>
+                  <div class="col-lg-6">
+                            <CertificateUpload />    
+                  </div>
+              </div>
             </div>
-            
-            <input type="submit" value="Submit" />
           </div>
-        </form>
+         
       </div>
     );
   }

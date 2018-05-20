@@ -1,0 +1,24 @@
+ <form onSubmit={this.handleSubmit.bind(this)}>
+          <div className="form-group">
+            <label>Choose your certificate</label>
+                       {/* <input type="file" className="form-control-file" id="exampleFormControlFile1" onChange={this.fileSelectHandler.bind(this)} /> */}
+                        <ReactFileReader handleFiles={this.handleFiles} fileTypes={'.txt'}>
+                          <button className='btn'>Upload</button>
+                        </ReactFileReader>
+            <br/> 
+            <hr/>
+            <div className="form-group">
+              <label>Select server to be deployed</label>
+              <select className="form-control" id="exampleFormControlSelect1" value={this.state.value} 
+                onChange={this.handleChange.bind(this)}>
+                  <option value="serverA">serverA</option>
+                  <option value="serverB">serverB</option>
+                  <option value="serverC">serverC</option>
+                  <option value="serverD">serverD</option>
+                  <option value="serverE">serverE</option>
+              </select>
+            </div>
+            
+            <input type="submit" value="Submit" />
+          </div>
+        </form>
